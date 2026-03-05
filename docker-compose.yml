@@ -1,0 +1,38 @@
+services:
+  mariadb:
+    image: bitnamilegacy/mariadb:11.4
+    container_name: moodle-mariadb
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+      MARIADB_USER: bn_moodle
+      MARIADB_DATABASE: moodle
+      MARIADB_PASSWORD: bitnami
+    volumes:
+      - mariadb_data:/bitnami/mariadb
+
+  moodle:
+    image: bitnamilegacy/moodle:5.0.2
+    container_name: moodle-app
+    depends_on:
+      - mariadb
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      MOODLE_DATABASE_TYPE: mariadb
+      MOODLE_DATABASE_HOST: mariadb
+      MOODLE_DATABASE_PORT_NUMBER: "3306"
+      MOODLE_DATABASE_NAME: moodle
+      MOODLE_DATABASE_USER: bn_moodle
+      MOODLE_DATABASE_PASSWORD: bitnami
+
+      MOODLE_SITE_NAME: Local Moodle Sandbox
+      MOODLE_USERNAME: admin
+      MOODLE_PASSWORD: admin12345
+      MOODLE_EMAIL: admin@example.com
+    volumes:
+      - moodledata_data:/bitnami/moodledata
+
+volumes:
+  mariadb_data:
+  moodledata_data:
